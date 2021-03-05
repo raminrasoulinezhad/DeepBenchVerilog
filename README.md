@@ -1,7 +1,14 @@
 # DeepBenchVerilog
-Verilog version of Deep Bench Benchmark, Baidu (https://github.com/baidu-research/DeepBench)
 
-If you want to use this codes please cite our work at ***ISFPGA 2021***:
+This repository includes the verilog HDL version of the kernels presented in DeepBench, Baidu (https://github.com/baidu-research/DeepBench). To generate them, we used Xilinx HLS tool v2018.2 and it's sample projects as starters. The generated HDL kernels are captured and posted here. 
+
+
+## Details:
+
+    Arch = 3                // Adder-tree
+    Data precision = 8 bit  // sutable for PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
+
+## Please cite our work at ***ISFPGA 2021***:
 
     @inproceedings{10.1145/3431920.3439479,
         author = {Rasoulinezhad, Seyedramin and Boland, David and Leong, Philip H.W.},
