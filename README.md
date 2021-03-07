@@ -5,8 +5,30 @@ This repository includes the verilog HDL version of the kernels presented in Dee
 
 ## Details:
 
-    Arch = 3                // Adder-tree
+Precision:
+
     Data precision = 8 bit  // sutable for PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
+
+Architecture:
+
+    Arch = 3                // Adder-tree
+
+or
+
+    Arch = 4                // Cascade
+
+    
+The Arch 4 is modified by this:
+
+    if (MULTIPLIER_TRAITS::ColsATrans <= 1024){
+        #pragma HLS ARRAY_PARTITION variable=A complete dim=MULTIPLIER_TRAITS::A_FULL_UNROLL_DIM
+        #pragma HLS ARRAY_PARTITION variable=B complete dim=MULTIPLIER_TRAITS::B_FULL_UNROLL_DIM
+    } else {
+        #pragma HLS ARRAY_PARTITION variable=A cyclic factor=1024 dim=MULTIPLIER_TRAITS::A_FULL_UNROLL_DIM
+        #pragma HLS ARRAY_PARTITION variable=B cyclic factor=1024 dim=MULTIPLIER_TRAITS::B_FULL_UNROLL_DIM
+    }
+
+    
 
 ## Please cite our work at ***ISFPGA 2021***:
 
