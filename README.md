@@ -36,7 +36,7 @@ So, we picked largest kernels which dimentions are lower than 300. If the kernel
 
 ### GEMM Kernels (Done)
 
-| Kernel                 | A^T | B^T | IP size         | Reuse        | Done |
+| Kernel                 | A^T | B^T | IP sizes        | Reuse        | Done |
 |------------------------|-----|-----|-----------------|--------------|------| 
 | M=1760, N=128,  K=1760 | N   | N   | 220 x 128 x 220 | 8  x 1  x  8 | Yes  | 
 | M=7860, N=64,   K=2560 | N   | N   | 131 x 64  x 256 | 60 x 1  x 10 | Yes  | 
@@ -49,19 +49,19 @@ So, we picked largest kernels which dimentions are lower than 300. If the kernel
 
 The recurrent op kernels are only run on NVIDIA hardware.
 
-| Hidden Units | Batch Size | TimeSteps | Recurrent Type  | Kernel                     | IP size         | Reuse       |Modified-IP size |Modified-Reuse | Done | 
-| -------------| ---------- | --------- | --------------- | -------------------------- | ----------------|-------------| ----------------|---------------|------| 
-| 1760         | 16         | 50        | Vanilla         | [1760, 3520] x [3520, 16]  | 220 x 16  x 220 | 8  x 1 x 12 | 880 x 16  x 880 | 2  x 1 x 3    | Old  | 
-| 2560         | 32         | 50        | Vanilla         | [2560, 5120] x [5120, 32]  | 256 x 32  x 256 | 10 x 1 x 20 | 640 x 32  x 640 | 4  x 1 x 4    | New  |
-| 1024         | 128        | 25        | LSTM            | [4096, 2048] x [2048, 128] | 256 x 128 x 256 | 16 x 1 x 8  | 256 x 128 x 256 | 16 x 1 x 8    | Yes  |         
-| 2816         | 32         | 1500      | GRU             | [8448, 5632] x [5632, 32]  | 256 x 32  x 256 | 33 x 1 x 22 | 768 x 32  x 704 | 11 x 1 x 8    |      |         
+| Hidden Units | Batch Size | TimeSteps | Recurrent Type  | Kernel                     | IP sizes        | Reuse       | Done | 
+| -------------| ---------- | --------- | --------------- | -------------------------- | ----------------|-------------|------| 
+| 1760         | 16         | 50        | Vanilla         | [1760, 3520] x [3520, 16]  | 220 x 16  x 220 | 8  x 1 x 12 | Yes  | 
+| 2560         | 32         | 50        | Vanilla         | [2560, 5120] x [5120, 32]  | 256 x 32  x 256 | 10 x 1 x 20 | New  |
+| 1024         | 128        | 25        | LSTM            | [4096, 2048] x [2048, 128] | 256 x 128 x 256 | 16 x 1 x 8  | Yes  |         
+| 2816         | 32         | 1500      | GRU             | [8448, 5632] x [5632, 32]  | 256 x 32  x 256 | 33 x 1 x 22 | New  |         
 
 
 ## Inference:
 
 ### GEMM
 
-| Kernel                 | A^T | B^T | IP size         | Reuse       | Done |
+| Kernel                 | A^T | B^T | IP sizes         | Reuse       | Done |
 |------------------------|-----|-----|-----------------|-------------|------| 
 | M=5124, N=700,  K=2048 | N   | N   | 244 x 175 x 256 | 21 x 4  x 8 | Yes  | 
 | M=35,   N=700,  K=2048 | N   | N   | 35  x 175 x 256 | 1  x 4  x 8 | Yes  | 
@@ -70,12 +70,12 @@ The recurrent op kernels are only run on NVIDIA hardware.
 
 ### Recurrent Kernels
 
-| Hidden Units | Batch Size | TimeSteps | Recurrent Type | Kernel                   | IP size       | Reuse       |Modified-IP size |Modified-Reuse | Done |
-|--------------|------------|-----------|----------------|--------------------------|---------------|-------------|-----------------|---------------|------|
-| 1536         | 4          | 50        | LSTM           | [6144, 3072] x [3072, 4] | 256 x 4 x 256 | 24 x 1 x 12 | 1024 x 4 x 1024 | 6  x 1 x 3    |      |
-| 256          | 4          | 150       | LSTM           | [1024, 512]  x [512,  4] | 256 x 4 x 256 | 4  x 1 x 2  | 1024 x 4 x 512  | 1  x 1 x 1    |      |
-| 2816         | 1          | 1500      | GRU            | [8448, 5632] x [5632, 1] | 256 x 1 x 256 | 33 x 1 x 22 | 768  x 1 x 704  | 11 x 1 x 8    | new2 |
-| 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | 960  x 2 x 640  | 8  x 1 x 8    | new3 |
+| Hidden Units | Batch Size | TimeSteps | Recurrent Type | Kernel                   | IP sizes      | Reuse       | Done |
+|--------------|------------|-----------|----------------|--------------------------|---------------|-------------|------|
+| 1536         | 4          | 50        | LSTM           | [6144, 3072] x [3072, 4] | 256 x 4 x 256 | 24 x 1 x 12 |      |
+| 256          | 4          | 150       | LSTM           | [1024, 512]  x [512,  4] | 256 x 4 x 256 | 4  x 1 x 2  |      |
+| 2816         | 1          | 1500      | GRU            | [8448, 5632] x [5632, 1] | 256 x 1 x 256 | 33 x 1 x 22 | new2 |
+| 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | new3 |
 
 
 
