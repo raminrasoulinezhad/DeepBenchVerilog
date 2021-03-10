@@ -41,6 +41,7 @@ void matrix_multiply_top(const MATRIX_T A [A_ROWS][A_COLS],
   MATRIX_T b_i [B_ROWS][B_COLS];
   MATRIX_T c_i [C_ROWS][C_COLS];
 
+
   // Copy input data to local memory
   a_row_loop : for (int r=0;r<A_ROWS;r++) {
     a_col_loop : for (int c=0;c<A_COLS;c++) {

@@ -45,23 +45,23 @@ So, we picked largest kernels which dimentions are lower than 300. If the kernel
 | M=3072, N=128,  K=1024 | T   | N   | 256 x 128 x 256 | 12 x 1  x 4  | Yes  | 
 
 
-### Recurrent Kernels
+### Recurrent Kernels (Done)
 
 The recurrent op kernels are only run on NVIDIA hardware.
 
 | Hidden Units | Batch Size | TimeSteps | Recurrent Type  | Kernel                     | IP sizes        | Reuse       | Done | 
 | -------------| ---------- | --------- | --------------- | -------------------------- | ----------------|-------------|------| 
 | 1760         | 16         | 50        | Vanilla         | [1760, 3520] x [3520, 16]  | 220 x 16  x 220 | 8  x 1 x 12 | Yes  | 
-| 2560         | 32         | 50        | Vanilla         | [2560, 5120] x [5120, 32]  | 256 x 32  x 256 | 10 x 1 x 20 | New  |
+| 2560         | 32         | 50        | Vanilla         | [2560, 5120] x [5120, 32]  | 256 x 32  x 256 | 10 x 1 x 20 | Yes  |
 | 1024         | 128        | 25        | LSTM            | [4096, 2048] x [2048, 128] | 256 x 128 x 256 | 16 x 1 x 8  | Yes  |         
-| 2816         | 32         | 1500      | GRU             | [8448, 5632] x [5632, 32]  | 256 x 32  x 256 | 33 x 1 x 22 | New  |         
+| 2816         | 32         | 1500      | GRU             | [8448, 5632] x [5632, 32]  | 256 x 32  x 256 | 33 x 1 x 22 | Yes  |         
 
 
 ## Inference:
 
 ### GEMM
 
-| Kernel                 | A^T | B^T | IP sizes         | Reuse       | Done |
+| Kernel                 | A^T | B^T | IP sizes        | Reuse       | Done |
 |------------------------|-----|-----|-----------------|-------------|------| 
 | M=5124, N=700,  K=2048 | N   | N   | 244 x 175 x 256 | 21 x 4  x 8 | Yes  | 
 | M=35,   N=700,  K=2048 | N   | N   | 35  x 175 x 256 | 1  x 4  x 8 | Yes  | 
@@ -72,10 +72,10 @@ The recurrent op kernels are only run on NVIDIA hardware.
 
 | Hidden Units | Batch Size | TimeSteps | Recurrent Type | Kernel                   | IP sizes      | Reuse       | Done |
 |--------------|------------|-----------|----------------|--------------------------|---------------|-------------|------|
-| 1536         | 4          | 50        | LSTM           | [6144, 3072] x [3072, 4] | 256 x 4 x 256 | 24 x 1 x 12 |      |
-| 256          | 4          | 150       | LSTM           | [1024, 512]  x [512,  4] | 256 x 4 x 256 | 4  x 1 x 2  |      |
-| 2816         | 1          | 1500      | GRU            | [8448, 5632] x [5632, 1] | 256 x 1 x 256 | 33 x 1 x 22 | new2 |
-| 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | new3 |
+| 1536         | 4          | 50        | LSTM           | [6144, 3072] x [3072, 4] | 256 x 4 x 256 | 24 x 1 x 12 | Old     |
+| 256          | 4          | 150       | LSTM           | [1024, 512]  x [512,  4] | 256 x 4 x 256 | 4  x 1 x 2  | Old     |
+| 2816         | 1          | 1500      | GRU            | [8448, 5632] x [5632, 1] | 256 x 1 x 256 | 33 x 1 x 22 | Yes  |
+| 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | new     |
 
 
 
@@ -89,6 +89,11 @@ Note: DeepBench assume `in = h`.
     Vanila RNN:  [ h x 2h] x [2h x B]
     LSTM:        [4h x 2h] x [2h x B]
     GRU:         [3h x 2h] x [2h x B]
+
+How to run on servers:
+
+    cd proj_addr
+    vivado_hls ./proj_matrix_multiply/solution1/csynth.tcl
 
 
 # Please cite our work at ***ISFPGA 2021***:
