@@ -63,7 +63,7 @@ As it is impossible to unroll large kernels fully, we used the following methodo
 
 2- In the case of RNNs and GEMMs, we deal with matrix multiplications. So, we can unroll three dimensions. Vivado HLS has a 1024 limitation for unrolling each dimension. 
 
-3- Larger unrollings require higher compilation time. As a rule of thumb, if dimensions are all less or equal to 256, the compilation time is fine withing 12 hours.
+3- Larger unrollings require higher compilation time. As a rule of thumb, if dimensions are all less or equal to 256, the compilation time is within 12 hours.
 
 4- unrolling by the powers of two are not the best performance cases as it highly depends on the kernel sizes due to under-utilization. So, we see a lot of various IP core sizings. 
 
