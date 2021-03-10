@@ -136,7 +136,7 @@ How to run on servers:
 
 # Please cite our work at ***ISFPGA 2021***:
 
-Note: Although these Verilog models are not used in this paper, this repository is part of the development process of this work. 
+Note: Although these Verilog models are not used in [MLBlocks](https://dl.acm.org/doi/10.1145/3431920.3439479) paper, this repository is part of the development process of this work.
 
     @inproceedings{10.1145/3431920.3439479,
         author = {Rasoulinezhad, Seyedramin and Boland, David and Leong, Philip H.W.},
