@@ -1,34 +1,75 @@
 # DeepBenchVerilog
 
-This repository includes the verilog HDL version of the kernels presented in DeepBench, Baidu (https://github.com/baidu-research/DeepBench). To generate them, we used Xilinx HLS tool v2018.2 and it's sample projects as starters. The generated HDL kernels are captured and posted here. 
+This repository includes the Verilog version of the DeepBench suit presented by Baidu. (https://github.com/baidu-research/DeepBench). To generate them, we used the Xilinx HLS tool v2018.2, and it's ready to use sample projects. This repository includes the generated Verilog model files.
+
+DeepBench dataset categorizes the cases in the following hierarchy:
+
+    DeepBench
+    ├── Training
+    │   ├── GEMMs       --> Done
+    │   ├── RNNs        --> Done
+    │   ├── CNNs        --> ongoing
+    │   └── All-Reduce  --> ongoing
+    └── Inference
+        ├── GEMMs       --> Done
+        ├── RNNs        --> Done
+        └── CNNs        --> ongoing
 
 
-## Details:
+## How to redo our work:
 
-Precision:
+Up to now, we only prepared the GEMM and RNN cases. To do so:
 
-    Data precision = 8 bit  // sutable for PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
+1- Open Vivado HLS tool (we used v2018.2) 
 
-Architecture:
+    vivado_hls &
 
-We used Cascade architecture, which is optimized for fixed point arithmetics for high throughput. 
+2- Open the sample projects list and select matrix_multipy. 
+
+3- Then, copy the `.cpp` and `.h` files from `repo_addr/codes/GEMMs_and_RNNs/` to the main project directory. Note, you will replace three files and add a new file, named "matrix_multiply_custom.h". 
+
+4- Then, add the new file to the project files on Vivado HSL. 
+
+    project --> add source .. 
+
+5- run the compilation and synthesis process. The used script is located at `repo_addr/codes/GEMMs_and_RNNs/script.tcl`
+
+
+## Architecture details:
+
+**Precision:**
+The arithmetic precision is defined at `repo_addr/codes/GEMMs_and_RNNs/matrix_multipy.h`:
+
+    Data precision = 8 bit // (ap_uint<8>) 
+
+ This is suitable for architecture research such as PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
+
+
+**Architecture:**
+
+We used Cascade architecture, which is optimized for fixed-point arithmetics for high throughput. 
 
     ARCH_OPT = 4                // Cascade
 
-Adder-tree architecture is not suitale as it is optimized for floating point arithmetic. this is based on comment presented in Vivado HLS codes. 
+Adder-tree architecture is not suitable as it is optimized for floating-point arithmetic. This is based on comments at Vivado HLS libraries. 
 
     ARCH_OPT = 3                // Adder-tree
 
-IP core unrolling method:
+**Unrolling factors**
 
-1- larger IP cores are more efficient.
-2- kernels with dimentions larger than 256 takes time to compile.
-3- powers of two are not always delivering the best performance due to under-utilization
-4- if the size is not dividable, we used the largest power of two which is lower or equal to 256.
-5- complete unrolling for more than 1024 is not accepted. so we hard limited this unrrolling factor for all cases.
+As it is impossible to unroll large kernels fully, we used the following methodology to select the IP core computation. Then the IP can be used by scheduling the data over that to perform the calculation. We used the IP core Verilog model as the Verilog model for the corresponding benchmark case. Our used methodology is designed for 1) having a reasonable unrolling approach for embedded FPGA implementation with restricted resources and 2) for a reasonable compilation time targeting less than 12 hours per cases. The following are the observations/bases of the methodology, which are driven by cycle estimation analysis: 
 
-So, we picked largest kernels which dimentions are lower than 300. If the kernel is very narrow in one dimention, we enlargeed the boundaries. 
+1- Larger unrollings lead to higher performance and lower latency IP cores. 
 
+2- In the case of RNNs and GEMMs, we deal with matrix multiplications. So, we can unroll three dimensions. Vivado HLS has a 1024 limitation for unrolling each dimension. 
+
+3- Larger unrollings require higher compilation time. As a rule of thumb, if dimensions are all less or equal to 256, the compilation time is fine withing 12 hours.
+
+4- unrolling by the powers of two are not the best performance cases as it highly depends on the kernel sizes due to under-utilization. So, we see a lot of various IP core sizings. 
+
+5- To avoid underutilization, we picked the largest divider of each kernel dimension size which is less or equal to 256.  Let's say a GEMM kernel is defined by `M=5124, N=9124, K=2560`. We choose ` 244` for unrolling the `M` dimension with reusing the IP for that dimension 21 times. 
+
+We are still working on the convolution layer and all-reduce kernels. 
 
 # Case studies:
 
@@ -78,9 +119,6 @@ The recurrent op kernels are only run on NVIDIA hardware.
 | 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | Yes  | 
 
 
-
-
-
 # Notes:
 
 The model to translate Recurrent network kernels to Matrix multiplication (based on MLBlock Repository):
@@ -98,6 +136,8 @@ How to run on servers:
 
 # Please cite our work at ***ISFPGA 2021***:
 
+Note: Although these Verilog models are not used in this paper, this repository is part of the development process of this work. 
+
     @inproceedings{10.1145/3431920.3439479,
         author = {Rasoulinezhad, Seyedramin and Boland, David and Leong, Philip H.W.},
         title = {MLBlocks: FPGA Blocks for Machine Learning Applications},
@@ -109,8 +149,8 @@ How to run on servers:
         booktitle = {The 2021 ACM/SIGDA International Symposium on Field-Programmable Gate Arrays},
     }
 
-# Some usefull links:
+# Some usefull links (To be lazy):
 
-online numerical factor decomposition tools:
+Online numerical factor decomposition tools:
 
         https://www.dcode.fr/2-factors-decomposition
