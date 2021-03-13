@@ -73,7 +73,7 @@ def fetch_example_model_flex(	model_name,
 	download_link_model = download_link + model_type + '/' + model_name
 	
 	#Download the example model
-	if not exists(model_name) or force_replace: 
+	if (not exists(model_name)) or force_replace: 
 		print("Downloading example model files ...")
 		urlretrieve(download_link_model, model_name)
 
@@ -97,7 +97,7 @@ def fetch_example_model_flex(	model_name,
 	if model_type == 'keras':
 		model_weight_name = model_name[:-5] + "_weights.h5"
 
-		if not exists(model_weight_name) or force_replace: 
+		if (not exists(model_weight_name)) or force_replace: 
 			download_link_weight = download_link + model_type + '/' + model_weight_name
 			urlretrieve(download_link_weight, model_weight_name)
 

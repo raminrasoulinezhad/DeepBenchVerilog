@@ -4,20 +4,17 @@ from my_utils import fetch_example_model_flex
 # Parameters 
 do_compilation = True
 
-force_replace=False,
+force_replace = False
 
 Precision = 'ap_fixed<16,8>'
-ReuseFactor = '16'
+ReuseFactor = '4194304'
 fpga_part = 'xcku115-flvb2104-2-i'
 clock_period = 5
-io_type = 'io_parallel'
+io_type = 'io_stream' # 'io_stream' 'io_parallel'
 
 
 # Print full list of example models if you want to explore more
 hls4ml.utils.fetch_example_list()
-
-fetch_method = hls4ml.utils.fetch_example_model
-#fetch_method = hls4ml.utils.fetch_example_model_flex
 
 # model_name = 'jetTagger_Conv2D_Small_NoBatchNorm.json' 	# fails
 model_name = 'KERAS_conv2d_model.json'		# fails
