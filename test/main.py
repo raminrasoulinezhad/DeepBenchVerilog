@@ -1,7 +1,17 @@
 import hls4ml
 from my_utils import fetch_example_model_flex
 
+# Parameters 
 do_compilation = True
+
+force_replace=False,
+
+Precision = 'ap_fixed<16,8>'
+ReuseFactor = '16'
+fpga_part = 'xcku115-flvb2104-2-i'
+clock_period = 5
+io_type = 'io_parallel'
+
 
 # Print full list of example models if you want to explore more
 hls4ml.utils.fetch_example_list()
@@ -10,14 +20,21 @@ fetch_method = hls4ml.utils.fetch_example_model
 #fetch_method = hls4ml.utils.fetch_example_model_flex
 
 # model_name = 'jetTagger_Conv2D_Small_NoBatchNorm.json' 	# fails
-#model_name = 'KERAS_conv2d_model.json'		# fails
+model_name = 'KERAS_conv2d_model.json'		# fails
 #model_name = 'KERAS_3layer.json'			# OK
-model_name = 'conv2d_small_mp_keras.onnx'	# OK
+#model_name = 'conv2d_small_mp_keras.onnx'	# OK
 #model_name = 'conv2d_small_keras.onnx'
 
 # Fetch a keras model (download and return an example configuration file)
 #config = hls4ml.utils.fetch_example_model(model_name)
-config = fetch_example_model_flex(model_name, force_replace=False)
+config = fetch_example_model_flex(	model_name, 
+									force_replace=force_replace,
+									Precision=Precision,
+									ReuseFactor=ReuseFactor,
+									fpga_part=fpga_part,
+									clock_period=clock_period,
+									io_type=io_type
+								)
 
 
 # Print the configurations

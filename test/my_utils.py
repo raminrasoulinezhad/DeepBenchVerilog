@@ -8,10 +8,18 @@ from os.path import exists
 
 from hls4ml.utils.example_models import _data_is_available,_config_is_available,_create_default_config
 
-def _create_default_config_flex(model_name, model_config, Precision='ap_fixed<16,6>', ReuseFactor='1'):
+def _create_default_config_flex(	model_name, 
+									model_config, 
+									Precision='ap_fixed<16,6>', 
+									ReuseFactor='1',
+									fpga_part='xcku115-flvb2104-2-i',
+									clock_period=5,
+									io_type='io_parallel'):
 
     #Initiate the configuration file
-    config = create_vivado_config()
+    config = create_vivado_config(	fpga_part=fpga_part, 
+    								clock_period=clock_period, 
+    								io_type=io_type)
 
     #Additional configuration parameters
     config[model_config] = model_name
@@ -21,7 +29,14 @@ def _create_default_config_flex(model_name, model_config, Precision='ap_fixed<16
 
     return config
 
-def fetch_example_model_flex(model_name, force_replace=False):
+def fetch_example_model_flex(	model_name, 
+								force_replace=False,
+								Precision='ap_fixed<16,8>', 
+								ReuseFactor='16',
+								fpga_part='xcku115-flvb2104-2-i',
+								clock_period=5,
+								io_type='io_parallel'
+							):
 	"""
 	This function is a copy version of "fetch_example_model" from 
 
@@ -69,7 +84,14 @@ def fetch_example_model_flex(model_name, force_replace=False):
 	if _config_is_available(model_name):
 		config = _load_example_config(model_name)
 	else:
-		config = _create_default_config_flex(model_name, model_config, Precision='ap_fixed<16,8>', ReuseFactor='16')
+		config = _create_default_config_flex(	model_name, 
+												model_config, 
+												Precision=Precision,
+												ReuseFactor=ReuseFactor,
+												fpga_part=fpga_part,
+												clock_period=clock_period,
+												io_type=io_type
+											)
 
 	#If the model is a keras model then have to download its weight file as well
 	if model_type == 'keras':
