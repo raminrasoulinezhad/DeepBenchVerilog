@@ -216,6 +216,31 @@ Note: Although these Verilog models are not used in [MLBlocks](https://dl.acm.or
 
 # Some usefull links (To be lazy):
 
-Online numerical factor decomposition tools:
+### Online factor decomposition tools:
 
         https://www.dcode.fr/2-factors-decomposition
+
+### HLS tools:
+
+List of HLS tools (Academic and Commercial):
+
+    https://en.wikipedia.org/wiki/High-level_synthesis
+
+Panda HLS
+
+    https://panda.dei.polimi.it/?page_id=81
+
+
+PyMTL:
+
+    https://github.com/cornell-brg/pymtl-tut-hls
+    https://www.csl.cornell.edu/pymtl2019/
+
+RFNoC:
+
+    https://github.com/Xilinx/RFNoC-HLS-NeuralNet/blob/master/rfnoc/hls/keras_1layer/README.md
+
+HLS4ML:
+
+    https://github.com/fastmachinelearning/hls4ml
+    # source: https://arxiv.org/pdf/2103.05579.pdf
