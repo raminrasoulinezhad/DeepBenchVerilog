@@ -19,8 +19,9 @@ DeepBench dataset categorizes the cases in the following hierarchy:
 
     DeepBenchVerilog
     ├── codes           --> codes and scripts we used for this work
-    ├── hls4ml_wrapper  --> should be moved to codes
-    ├── keras_generator --> should be moved to codes
+    │   ├── GEMMs_and_RNNs       
+    │   ├── hls4ml_wrapper       
+    │   └── keras_generator      
     ├── verilog         --> Include are benchmar kernels in Verilog. 
     └── docs            --> some selected manuals in pdf 
 
