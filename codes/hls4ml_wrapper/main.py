@@ -6,8 +6,8 @@ do_compilation = True
 
 force_replace = False
 
-Precision = 'ap_fixed<16,8>'
-ReuseFactor = '4194304'
+Precision = 'ap_fixed<8,4>'
+ReuseFactor = '1'
 fpga_part = 'xcku115-flvb2104-2-i'
 clock_period = 5
 io_type = 'io_stream' # 'io_stream' 'io_parallel'
@@ -17,10 +17,12 @@ io_type = 'io_stream' # 'io_stream' 'io_parallel'
 hls4ml.utils.fetch_example_list()
 
 # model_name = 'jetTagger_Conv2D_Small_NoBatchNorm.json' 	# fails
-model_name = 'KERAS_conv2d_model.json'		# fails
+# model_name = 'KERAS_conv2d_model.json'		# fails
 #model_name = 'KERAS_3layer.json'			# OK
 #model_name = 'conv2d_small_mp_keras.onnx'	# OK
 #model_name = 'conv2d_small_keras.onnx'
+
+model_name = 'jetTagger_Conv2D_Small.json'
 
 # Fetch a keras model (download and return an example configuration file)
 #config = hls4ml.utils.fetch_example_model(model_name)
