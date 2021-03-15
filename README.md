@@ -15,6 +15,14 @@ DeepBench dataset categorizes the cases in the following hierarchy:
         ├── RNNs        --> Done
         └── CNNs        --> ongoing
 
+## Directories and Files:
+
+    DeepBenchVerilog
+    ├── codes           --> codes and scripts we used for this work
+    ├── hls4ml_wrapper  --> should be moved to codes
+    ├── keras_generator --> should be moved to codes
+    ├── verilog         --> Include are benchmar kernels in Verilog. 
+    └── docs            --> some selected manuals in pdf 
 
 ## How to redo our work:
 
@@ -244,3 +252,8 @@ HLS4ML:
 
     https://github.com/fastmachinelearning/hls4ml
     # source: https://arxiv.org/pdf/2103.05579.pdf
+
+### Installing TensorFlow on old CPUs (without supporting AVX instructions):
+
+    https://tech.amikelive.com/node-882/how-to-build-and-install-the-latest-tensorflow-without-cuda-gpu-and-with-optimized-cpu-performance-on-ubuntu/
+
