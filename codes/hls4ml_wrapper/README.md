@@ -35,6 +35,10 @@ we replace using the `fetch_example_model` function from `venv_addr/lib/python3.
 
 ## HLS4ML for convolution layers: 
 
+source: 
+    
+    https://github.com/fastmachinelearning/hls4ml/issues/289
+
 1- change the compile strategy to `Resource`, located at `HLSConfig` class.
 	
 	vim venv_addr/lib/python3.7/site-packages/hls4ml/model/hls_model.py
