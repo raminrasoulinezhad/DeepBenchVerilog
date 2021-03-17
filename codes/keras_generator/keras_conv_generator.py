@@ -130,6 +130,8 @@ if __name__ == "__main__":
 	if (mat_out_size >= 2**16):
 		print('#--> Warning: This may not fit hls4ml constraints (large output).')
 
+	print('MAXMUL: ', mat_weight_size)
+	
 	## Save model as JSON file
 	if output_json:
 		# source: https://machinelearningmastery.com/save-load-keras-deep-learning-models/
