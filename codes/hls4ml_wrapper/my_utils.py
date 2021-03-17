@@ -1,5 +1,5 @@
 from urllib.request import urlretrieve
-from hls4ml.utils.config import create_vivado_config
+from hls4ml.utils.config import create_vivado_config,_load_example_config
 import pprint
 import json
 import yaml
