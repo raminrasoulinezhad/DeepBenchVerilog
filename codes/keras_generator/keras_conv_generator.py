@@ -120,6 +120,15 @@ if __name__ == "__main__":
 	y = model(x)
 	print(y.shape)
 
+	mat_in_size = input_image_x * input_image_y * input_image_c
+	mat_weight_size = filters * kernel_size[0] * kernel_size[1] * input_image_c
+	mat_out_size = y.shape[1] * y.shape[2] * y.shape[3]
+	if (mat_in_size >= 2**16):
+		print('#--> Warning: This may not fit hls4ml constraints (large input).')
+	if (mat_weight_size >= 2**16):
+		print('#--> Warning: This may not fit hls4ml constraints (large weight).')
+	if (mat_out_size >= 2**16):
+		print('#--> Warning: This may not fit hls4ml constraints (large output).')
 
 	## Save model as JSON file
 	if output_json:

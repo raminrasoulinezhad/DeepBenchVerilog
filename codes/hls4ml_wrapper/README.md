@@ -66,29 +66,34 @@ to this:
 
 	io_type = 'io_stream' # Two options: 'io_stream' or 'io_parallel'
 
+3- Note, if the number of MAXMUL is a limit to the synthesis, and you have good amount of RAM memories, then try expanding the limit on  the number of implementation limited multipliers by modifying two files. (4096 --> to any number you want)
 
+    vim     venv_addr/lib/python3.7/site-packages/hls4ml/converters/keras_to_hls.py
+    vim     venv_addr/lib/python3.7/site-packages/hls4ml/templates/vivado/build_prj.tcl
 
-### Samples:
+### HLS4ML Samples:
 
-'keras': [   'KERAS_3layer_binarydense_relu_max.json',      --> not working
-                 'keras_bnn.json',                          
-                 'jetTagger_Conv2D_Small.json',
-                 'KERAS_conv2d_model.json',                 --> io_stream / Reuse=1 / Strategy: Resource
-                 'KERAS_dense_16x100x100x100x100x100x5.json',
-                 'qkeras_mnist_dense.json',
-                 'KERAS_dense_16x200x200x200x200x200x5.json',
-                 'KERAS_3layer_ternary_small.json',
-                 'qkeras_3layer.json',
-                 'KERAS_conv1d_small.json',
-                 'jetTagger_Conv2D_Small_NoBatchNorm.json',
-                 'KERAS_3layer_binary_smaller.json',
-                 'KERAS_conv1d.json',
-                 'garnet_1layer.json',
-                 'KERAS_3layer.json',
-                 'KERAS_1layer.json',
-                 'KERAS_3layer_batch_norm.json',
-                 'garnet_3layer.json',
-                 'KERAS_dense_16x500x500x500x500x500x5.json'],
+To generate verilog version for these models, you need to set the `model_name` parameter in `main.py` to one of the follwoing list:
+
+    'keras': [  'KERAS_3layer_binarydense_relu_max.json',      --> Done (Strategy=Latency, io_type=io_parallel, Reuse=1)
+                'keras_bnn.json',                              --> Done (Strategy=Latency, io_type=io_stream, Reuse=1)
+                'jetTagger_Conv2D_Small.json',                 --> Done (Strategy=Resource, io_type=io_stream, Reuse=1)
+                'KERAS_conv2d_model.json',                     --> Done (Strategy=Resource, io_type=io_stream, Reuse=1)
+                'KERAS_dense_16x100x100x100x100x100x5.json',   2
+                'qkeras_mnist_dense.json',                     Exception: ERROR: Unsupported layer type: QActivation
+                'KERAS_dense_16x200x200x200x200x200x5.json',   
+                'KERAS_3layer_ternary_small.json',             --> Done (Strategy=Resource, io_type=io_stream, Reuse=1)
+                'qkeras_3layer.json',                          
+                'KERAS_conv1d_small.json',
+                'jetTagger_Conv2D_Small_NoBatchNorm.json',     --> Done (Strategy=Resource, io_type=io_stream, Reuse=1)
+                'KERAS_3layer_binary_smaller.json',            Unsupported layers 
+                'KERAS_conv1d.json',
+                'garnet_1layer.json',                          
+                'KERAS_3layer.json',
+                'KERAS_1layer.json',
+                'KERAS_3layer_batch_norm.json',
+                'garnet_3layer.json',
+                'KERAS_dense_16x500x500x500x500x500x5.json'],
     'onnx': [   'three_layer_bn_keras.onnx',
                 'two_layer_pytorch.onnx',
                 'conv1d_small_keras.onnx',
@@ -102,3 +107,8 @@ to this:
     'pytorch': ['two_layer_model.pt', 'three_layer_model.pt'],
     'tensorflow': ['3layer.pb']}
 
+Then, it automatically implements it. Note you may need to chnage `Strategy` and `io_type` and `Reuse` parameters according to ech individual model. 
+
+Your generated verilog files are located at: `hls_wrapper/my-hls-test/myproject_prj/solution1/syn/verilog`
+
+We already generated some of the models. The results are located at `DeepBenchVerilog/verilog/hls4ml_instances`.
