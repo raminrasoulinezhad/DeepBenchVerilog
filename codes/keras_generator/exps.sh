@@ -19,7 +19,7 @@ python3 keras_conv_generator.py --batch=16 --in_x=56 --in_y=56 --in_c=3   --filt
 #filters / 32 , in_c / 32
 python3 keras_conv_generator.py --batch=16 --in_x=7   --in_y=7   --in_c=16 --filters=16 --kernel_x=3 --kernel_y=3  --strides=1 --padding=same  --dilation_rate=1 --groups=1
 
-# Wait
+# Done
 #python3 keras_conv_generator.py --batch=16 --in_x=28  --in_y=28  --in_c=192 --filters=32  --kernel_x=5 --kernel_y=5  --strides=1 --padding=same  --dilation_rate=1 --groups=1
 # c_in / 12 , filters / 4
 python3 keras_conv_generator.py --batch=16 --in_x=28  --in_y=28  --in_c=16 --filters=8  --kernel_x=5 --kernel_y=5  --strides=1 --padding=same  --dilation_rate=1 --groups=1
