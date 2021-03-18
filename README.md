@@ -18,53 +18,55 @@ DeepBench dataset categorizes the cases in the following hierarchy:
 ## Directories and Files:
 
     DeepBenchVerilog
-    ├── codes           --> codes and scripts we used for this work
-    │   ├── GEMMs_and_RNNs       
-    │   ├── hls4ml_wrapper       
-    │   └── keras_generator      
-    ├── verilog         --> Include are benchmar kernels in Verilog. 
-    └── docs            --> some selected manuals in pdf 
+    ├── codes                   --> codes and scripts we used for this work
+    │   ├── GEMMs_and_RNNs   
+    │   └── CNNs                
+    │       ├── hls4ml_wrapper       
+    │       └── keras_generator      
+    ├── verilog                 --> Include are benchmar kernels in Verilog. 
+    │   ├── hls4ml_instances  
+    │   ├── Training            --> DeepBench equivalents
+    │   └── inference           --> DeepBench equivalents
+    └── docs                    --> some selected manuals in pdf 
 
 ## How to redo our work:
 
-Up to now, we only prepared the GEMM and RNN cases. To do so:
+### GEMMs and RNNs:
+
+We used Vivado HLS sample project, matrix_multipy, to implement different matrix multiplicaiton operations. To do so:
 
 1- Open Vivado HLS tool (we used v2018.2) 
 
     vivado_hls &
 
-2- Open the sample projects list and select matrix_multipy. 
+2- Open the `sample projects` and select `matrix_multipy`. 
 
-3- Then, copy the `.cpp` and `.h` files from `repo_addr/codes/GEMMs_and_RNNs/` to the main project directory. Note, you will replace three files and add a new file, named "matrix_multiply_custom.h". 
+3- Then, copy all the `.cpp` and `.h` files from `repo_addr/codes/GEMMs_and_RNNs/` to the main directory of the created project. Note, you will replace three files and add a new file, named `matrix_multiply_custom.h`. 
 
-4- Then, add the new file to the project files on Vivado HSL. 
+4- Then, add the new file (`matrix_multiply_custom.h`) to the Vivado HLS project. 
 
     project --> add source .. 
 
-5- run the compilation and synthesis process. The used script is located at `repo_addr/codes/GEMMs_and_RNNs/script.tcl`
+5- Tun the compilation and synthesis process. The used script is located at `repo_addr/codes/GEMMs_and_RNNs/script.tcl`
 
-
-## Architecture details:
-
-### GEMMs and RNNs:
+6- to generate thifferent kernel results modify the matrix operation dimentions located in `matrix_multiply.h`.
 
 **Precision:**
-The arithmetic precision is defined at `repo_addr/codes/GEMMs_and_RNNs/matrix_multipy.h`:
+The arithmetic precision is defined at `matrix_multiply.h` file:
 
-    Data precision = 8 bit // (ap_uint<8>) 
+    typedef ap_uint<8> MATRIX_T; 
 
- This is suitable for architecture research such as PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
-
+This is suitable for architecture research such as PIR-DSP (https://ieeexplore.ieee.org/document/8735533)
 
 **Architecture:**
 
-We used Cascade architecture, which is optimized for fixed-point arithmetics for high throughput. 
+We used Cascade architecture, which is optimized for fixed-point arithmetics for high throughput (look `matrix_multiply.h`). 
 
-    ARCH_OPT = 4                // Cascade
+    const int ARCH_OPT = 4;                // Cascade
 
 Adder-tree architecture is not suitable as it is optimized for floating-point arithmetic. This is based on comments at Vivado HLS libraries. 
 
-    ARCH_OPT = 3                // Adder-tree
+    const int ARCH_OPT = 3;               // Adder-tree
 
 **Unrolling factors**
 
@@ -80,70 +82,27 @@ As it is impossible to unroll large kernels fully, we used the following methodo
 
 5- To avoid underutilization, we picked the largest divider of each kernel dimension size which is less or equal to 256.  Let's say a GEMM kernel is defined by `M=5124, N=9124, K=2560`. We choose ` 244` for unrolling the `M` dimension with reusing the IP for that dimension 21 times. 
 
+**verilog models**
+
+The output verilog model are available in `verilog/inference/GEMM/`, `verilog/training/GEMM/`, `verilog/inference/RNN/`, `verilog/training/RNN/` directories.
+
+
 ### CNNs
 
-**We are still working on the convolution layers. This part is not ready yet.**
+For the case of CNNs, we used the HLS4ML suit. This framework can accept high level describtions of a model, such as Keras models, and produces the corresonding verilog files for the given model. this process is dividable to 1) high-level synthesis (such as Keras model to C++ mode) and 2) HLS compilation (using vivado hls tool) to translate the C++ model to verilog files.
 
-For the case of CNNs, we used the hls4ml suit. To do so, we did similar to the work in [github.com/Xilinx/RFNoC-HLS-NeuralNet](https://github.com/Xilinx/RFNoC-HLS-NeuralNet) repository. Their examples are explained [here](https://github.com/Xilinx/RFNoC-HLS-NeuralNet/tree/master/rfnoc/hls/keras_1layer).
+More details can be found at `./codes/CNNs/` directory and it's `README.md` file. Using these codes we translated the DeepBench cnn benchmarks to verilog. the results are saved in `verilog/inference/Conv/` and `verilog/training/Conv/`. We also used this tool to generate a few number of full network examples provided by hls4ml suite. Their verilog models are at `verilog/hls4ml_instances/`.
 
-1- Install hls4ml using pip3:
+As there are some limitations, we assumed the following assumptions:
 
-    pip3 install hls4ml
+1- There is a maximum on the number of multiplicaitons (MAXMULT = 4096). 
+2- input, weight, and output tensors should include less than 2^16 elements.
 
-2- Clone hls4ml repository as used in [Xilinx/RFNoC-HLS-NeuralNet](https://github.com/Xilinx/RFNoC-HLS-NeuralNet) (by their example):
-
-    git clone https://github.com/fastmachinelearning/hls4ml.git
-
-3- checkout the specfic commit with hash number of "099aa99ccb9af486b2d511da9b90e7f60361dd74":
-
-    cd hls4ml
-    git checkout 099aa99ccb9af486b2d511da9b90e7f60361dd74
-
-4- Let's prepare the required configuration files.
-
-    config.yml --> describe the architecture parameters and locations of following two files.
-    model.json --> describe the network architecture.
-    weights.h5 --> describe the network weiht parameters 
-
-So, for any configuration we need to change model.jason. We need to remove weights.h5 and the corresponding codes. To do so, we need to work on `hls4ml/keras_to_hls/keras_to_hls..py` to somehow bypass the h5 file and generate random numbers. (it is possible)
-
-
-5- Then, use keras to hls convertor (`hls4ml_addr` = the location of cloned repository of hls4ml). This generates all required C files for passing to Vivado HLS tool.
-    
-    python hls4ml_addr/keras-to-hls/keras-to-hls.py -c config.yml
-
-6- let's turn of the simulations (soft/hard):
-
-    vim build_prj.tcl 
-
-and change 
-
-    array set opt {
-      csim   1
-      synth  1
-      cosim  1
-      export 1
-    }
-
-to 
-
-    array set opt {
-      csim   0
-      synth  1
-      cosim  0
-      export 1
-    }
-
-
-7- Then, generate the verilog file
-
-    vivado_hls -f build_prj.tcl
+So, we picked smaller kernels to accelerate the computaitons on FPGA. it is because the kernels are different from the Deep Bench kernels. The mapping is mentioned at `codes/CNNs/kernel_generator/exps.sh`.
 
 
 ### Reduce kernels:
-
 **We are still working on the all-reduce kernels.**
-
 
 # Case studies:
 
@@ -168,9 +127,17 @@ The recurrent op kernels are only run on NVIDIA hardware.
 | -------------| ---------- | --------- | --------------- | -------------------------- | ----------------|-------------|------| 
 | 1760         | 16         | 50        | Vanilla         | [1760, 3520] x [3520, 16]  | 220 x 16  x 220 | 8  x 1 x 12 | Yes  | 
 | 2560         | 32         | 50        | Vanilla         | [2560, 5120] x [5120, 32]  | 256 x 32  x 256 | 10 x 1 x 20 | Yes  |
-| 1024         | 128        | 25        | LSTM            | [4096, 2048] x [2048, 128] | 256 x 128 x 256 | 16 x 1 x 8  | Yes  |         
+| 1024         | 128        | 25        | LSTM            | [4096, 2048] x [2048, 128] | 256 x 128 x 256 | 16 x 1 x 8  | Yes  |        
 | 2816         | 32         | 1500      | GRU             | [8448, 5632] x [5632, 32]  | 256 x 32  x 256 | 33 x 1 x 22 | Yes  |         
+### Convolution Layers - Conv
 
+Case --> Verilog Directory
+
+    conv_b32_in_161_700_1_f_5_20_32_s_2_p_valid -->  failed
+    conv_b8_in_54_54_64_f_3_3_64_s_1_p_same     -->  verilog/training/Conv/conv_b8_in_28_28_16_f_3_3_16_s_1_p_same 
+    conv_b16_in_224_224_3_f_3_3_64_s_1_p_same   -->  verilog/training/Conv/conv_b16_in_56_56_3_f_3_3_16_s_1_p_same  
+    conv_b16_in_7_7_512_f_3_3_512_s_1_p_same    -->  verilog/training/Conv/conv_b16_in_7_7_16_f_3_3_16_s_1_p_same
+    conv_b16_in_28_28_192_f_5_5_32_s_1_p_same   -->  verilog/training/Conv/conv_b16_in_28_28_16_f_5_5_8_s_1_p_same
 
 ## Inference:
 
@@ -192,6 +159,16 @@ The recurrent op kernels are only run on NVIDIA hardware.
 | 2816         | 1          | 1500      | GRU            | [8448, 5632] x [5632, 1] | 256 x 1 x 256 | 33 x 1 x 22 | Yes  |
 | 2560         | 2          | 375       | GRU            | [7680, 5120] x [5120, 2] | 256 x 2 x 256 | 30 x 1 x 20 | Yes  | 
 
+### Convolution Layers - Conv
+
+# Inference 
+
+Case --> Verilog Directory
+
+    conv_b1_in_224_224_3_f_7_7_64_s_2_p_same   --> verilog/inference/Conv/conv_b1_in_112_112_3_f_7_7_16_s_2_p_same  
+    conv_b1_in_56_56_256_f_1_1_128_s_2_p_valid --> verilog/inference/Conv/conv_b1_in_56_56_16_f_1_1_64_s_2_p_valid  
+    conv_b2_in_7_7_512_f_1_1_2048_s_1_p_valid  --> verilog/inference/Conv/conv_b2_in_7_7_32_f_1_1_128_s_1_p_valid
+    conv_b4_in_171_40_8_f_5_5_32_s_2_p_valid   --> failed
 
 # Notes:
 
