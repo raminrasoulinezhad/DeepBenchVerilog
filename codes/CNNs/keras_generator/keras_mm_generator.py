@@ -21,10 +21,6 @@ if __name__ == "__main__":
 		print (arg, getattr(args, arg))
 	print('----------------------------------')
 
-	output_json = True
-	output_h5 = True
-	output_onnx = False
-
 	batch_size = args.batch
 	input_image_m = args.in_m
 	input_image_k = args.in_k
@@ -32,18 +28,19 @@ if __name__ == "__main__":
 
 	print ("Computation: [ %d x %d x %d ] x [ %d x %d ]" % (batch_size, input_image_m, input_image_k, input_image_k, input_image_n))
 
+	input_shape=(batch_size, input_image_m, input_image_k)
+	print ("input_shape: ", input_shape)
+
 	model = tf.keras.Sequential()
-	model.add(  tf.keras.layers.InputLayer(input_shape=(batch_size, input_image_m, input_image_k)) )
+	model.add(  tf.keras.layers.InputLayer(input_shape=input_shape) )
 	model.add(	tf.keras.layers.Dense(
 					input_image_n,
 					activation=None,
 					use_bias=False))
 
-	input_shape=(batch_size, input_image_m, input_image_k)
-	print ("input_shape: ", input_shape)
-
 	x = tf.random.normal(input_shape)
+	print('input_shape', x.shape)
 	y = model(x)
-	print(y.shape)
+	print('output_shape', y.shape)
 
-	save_model(model, output_json, output_h5)	
+	save_model(model)	

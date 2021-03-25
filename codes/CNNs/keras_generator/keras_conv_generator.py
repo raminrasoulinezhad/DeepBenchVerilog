@@ -32,10 +32,6 @@ if __name__ == "__main__":
 		print (arg, getattr(args, arg))
 	print('----------------------------------')
 
-	output_json = True
-	output_h5 = True
-	output_onnx = False
-
 	batch_size = args.batch
 	input_image_x = args.in_x
 	input_image_y = args.in_y
@@ -66,8 +62,9 @@ if __name__ == "__main__":
 					use_bias=use_bias))
 
 	x = tf.random.normal(input_shape)
+	print('input_shape', x.shape)
 	y = model(x)
-	print(y.shape)
+	print('output_shape', y.shape)
 
 	# To check the VIVADO HLS tool constraints 
 	mat_in_size = input_image_x * input_image_y * input_image_c
@@ -82,4 +79,4 @@ if __name__ == "__main__":
 
 	print('MAXMUL: ', mat_weight_size)
 	
-	save_model(model, output_json, output_h5)	
+	save_model(model)	
