@@ -9,6 +9,16 @@ from os.path import exists
 
 from hls4ml.utils.example_models import _data_is_available,_config_is_available,_create_default_config
 
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+        
 def _create_default_config_flex(	model_name, 
 									model_config, 
 									Precision='ap_fixed<16,6>', 

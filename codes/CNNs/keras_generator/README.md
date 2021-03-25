@@ -14,11 +14,13 @@ These files can be manually used for creating Convolution, matrix multiplication
 
 	keras_conv_generator.py 
 	keras_mm_generator.py  
+	keras_rnn_generator.py
 
 To run these codes, use the Python3 environment as mentioned at the beginning. Check the input arguments using the following command:
 
 	python3  keras_conv_generator.py  --help
-
+	python3  keras_mm_generator.py  --help
+	python3  keras_rnn_generator.py  --help
 
 
 To check the created files, you can load and examine the created models using our script in `keras_loader.py`. This is only a starting point for debugging. 

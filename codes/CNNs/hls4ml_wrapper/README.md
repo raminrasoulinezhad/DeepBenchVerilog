@@ -73,6 +73,16 @@ to this:
 
 ### HLS4ML Samples:
 
+To run the process:
+
+    python3 main.py --do_compilation=True \
+                    --force_replace=False \
+                    --Precision='ap_fixed<8,4>' \
+                    --ReuseFactor='1' \
+                    --fpga_part='xcku115-flvb2104-2-i' \
+                    --clock_period=5 \
+                    --io_type='io_stream'
+
 To generate verilog version for these models, you need to set the `model_name` parameter in `main.py` to one of the follwoing list:
 
     'keras': [  'KERAS_3layer_binarydense_relu_max.json',      --> Done (Strategy=Latency, io_type=io_parallel, Reuse=1)
