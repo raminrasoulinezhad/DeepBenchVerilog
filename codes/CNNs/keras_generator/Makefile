@@ -10,10 +10,9 @@ run_conv_generator:
 	python3 keras_conv_generator.py
 
 run_mm_generator:
-	python3 keras_mm_generator.py  --batch=2 --in_m=16 --in_k=16 --in_n=16
+	python3 keras_mm_generator.py --in_m=16 --in_k=32 --in_n=64
 	make clean_temps
 	make copy_keras_to_hls4ml_prj
-	#python3 keras_mm_generator.py  --batch=12 --in_m=16 --in_k=32 --in_n=64
 
 run_lstm_generator:
 	python3 keras_rnn_generator.py --batch=128 --timesteps=25 --hidden=1024 --keras_model='LSTM'

@@ -7,7 +7,6 @@ from utils import save_model
 
 def get_args():
 	parser = argparse.ArgumentParser(description='')
-	parser.add_argument('--batch', type=int, default=12, help='please enter the batch size')
 	parser.add_argument('--in_m', type=int, default=16, help='please enter the input rows')
 	parser.add_argument('--in_k', type=int, default=32, help='please enter the input cols')
 	parser.add_argument('--in_n', type=int, default=64, help='please enter the output cols')
@@ -21,14 +20,13 @@ if __name__ == "__main__":
 		print (arg, getattr(args, arg))
 	print('----------------------------------')
 
-	batch_size = args.batch
 	input_image_m = args.in_m
 	input_image_k = args.in_k
 	input_image_n = args.in_n
 
-	print ("Computation: [ %d x %d x %d ] x [ %d x %d ]" % (batch_size, input_image_m, input_image_k, input_image_k, input_image_n))
+	print ("Computation: [ %d x %d ] x [ %d x %d ]" % (input_image_m, input_image_k, input_image_k, input_image_n))
 
-	input_shape=(batch_size, input_image_m, input_image_k)
+	input_shape=(input_image_m, input_image_k)
 	print ("input_shape: ", input_shape)
 
 	model = tf.keras.Sequential()
@@ -36,7 +34,7 @@ if __name__ == "__main__":
 	model.add(	tf.keras.layers.Dense(
 					input_image_n,
 					activation=None,
-					use_bias=False))
+					use_bias=True))
 
 	x = tf.random.normal(input_shape)
 	print('input_shape', x.shape)

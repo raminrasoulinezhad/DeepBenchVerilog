@@ -122,3 +122,31 @@ Then, it automatically implements it. Note you may need to chnage `Strategy` and
 Your generated verilog files are located at: `hls_wrapper/my-hls-test/myproject_prj/solution1/syn/verilog`
 
 We already generated some of the models. The results are located at `DeepBenchVerilog/verilog/hls4ml_instances`.
+
+## simple rules:
+
+1- Conv layers: 
+    
+    Strategy  = Resource
+    io_type = io_stream
+    reuse = reasonable number
+
+2- MatMul (Dense layers)
+
+    Strategy  = Resource
+    io_type = io_serial
+    reuse = reasonable number
+
+3- Small cases   
+
+    Strategy = Latency
+    io_type = io_parallel
+    reuse = does not matter
+
+some limitaiton for Keras model:
+
+    https://github.com/fastmachinelearning/models/blob/master/keras/README.md
+
+A usefull tutorial:
+
+    https://indico.cern.ch/event/925648/contributions/3889861/attachments/2049418/3435155/hls4ml_tutorial.pdf
