@@ -33,7 +33,7 @@ To replace the files, use the following code:
 	./keras-to-hls.sh \
 		-x 'xc7vx690tffg1927-2' \
 		-c 5					\
-		-io io_serial			\
+		-i io_serial			\
 		-r  16					\
 		-d ./projects 			\
 		-t 'ap_fixed<8,4>' 		\
@@ -98,4 +98,4 @@ Then you can run the vivado_hls tool.
 
 ## What is the difference between this repo and it's origin repo? 
 
-To use the `repo_addr/test/keras_to_hls.sh` script for LSTM models, we needed to update this file to be more general. You can follow them by checking the very first two commits `12b06cd30212941833726d8fc59c53f93df10820` and `37601216ee3725e759b4f8918f235da537638cf7`.
+To use the `repo_addr/test/keras_to_hls.sh` script for LSTM models, we needed to update this file to be more general. You can follow them by checking the very first two commits `12b06cd30212941833726d8fc59c53f93df10820`, `37601216ee3725e759b4f8918f235da537638cf7`, and `b6add159927c68d3cfde1df529b0d8e2c44c37f1`.
