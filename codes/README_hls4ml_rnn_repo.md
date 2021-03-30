@@ -11,6 +11,8 @@ This manual describes how to use `hls4ml_rnn_repo` which is available at [https:
 	chmod +x ./install.sh
 	./install.sh
 
+**Note** this repository is based on [https://github.com/richarao/hls4ml/tree/keras-lstm](https://github.com/richarao/hls4ml/tree/keras-lstm) (a variend of [https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml](https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml) which is the standard hls4ml tool).
+
 Then activate the environment:
 
 	conda activate hls4ml-env
@@ -22,9 +24,42 @@ You need to manually replace hls4ml library files with a specific version with i
 	>>> hls4ml.__path__
 	the output in our case: ['~/.local/lib/python3.6/site-packages/hls4ml']
 
-To replace the files, use the following code:
+<!--- To replace the files, use the following code:
 
-	cp repo_addr/hls4ml ~/.local/lib/python3.6/site-packages/hls4ml
+	cp repo_addr/hls4ml ~/.local/lib/python3.6/site-packages/
+--->
+
+Also, as we only need synthesis process, turn off the simulation task by 
+
+	vim ~/.local/lib/python3.6/site-packages/hls4ml/templates/vivado/build_prj.tcl
+
+and change the begining part to:
+
+	array set opt {
+	  reset      0
+	  csim       0
+	  synth      1
+	  cosim      0
+	  validation 0
+	  export     0
+	  vsynth     0
+	}
+
+also change the maximum for max multiplier:
+
+	catch {config_array_partition -maximum_size 4096}
+to 
+	
+	catch {config_array_partition -maximum_size 12288}
+
+
+We also need to modify the `MAXMULT` value.
+
+	vim ~/.local/lib/python3.6/site-packages/hls4ml/converters/keras_to_hls.py
+
+Modify the begining of the file to:
+
+	MAXMULT = 12288
 
 2- Run hls4ml and vivado_hls for a sample mode:
 
@@ -95,6 +130,20 @@ else:
 	};
 
 Then you can run the vivado_hls tool. 
+
+## Some rules for acceptable RNN models:
+
+1- Rule 1:
+
+	(Number of Sequences) * (Hidden layer size) < 2^16
+
+Reason: It will be saved in a `short int` variable. It is a HLS4ML's limit.
+
+2- Rule 2:
+
+	(Hidden layer size) * (Hidden layer size) * 3 < MAXMULT	--> GRU
+	(Hidden layer size) * (Hidden layer size) * 4 < MAXMULT	--> LSTM
+
 
 ## What is the difference between this repo and it's origin repo? 
 
