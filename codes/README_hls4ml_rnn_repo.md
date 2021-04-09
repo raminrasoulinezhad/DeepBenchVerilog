@@ -137,7 +137,7 @@ Then you can run the vivado_hls tool.
 
 	(Number of Sequences) * (Hidden layer size) < 2^16
 
-Reason: It will be saved in a `short int` variable. It is a HLS4ML's limit.
+Reason: It will be saved in a `short int` variable. It is a HLS4ML's limit. You can ignore this part as does not affect the HW. 
 
 2- Rule 2:
 
