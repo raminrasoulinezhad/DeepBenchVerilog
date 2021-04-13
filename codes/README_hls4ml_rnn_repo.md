@@ -7,29 +7,45 @@ This manual describes how to use `hls4ml_rnn_repo` which is available at [https:
 1- Download and install the repo (including creating a virtual environment using conda):
 
 	git clone https://github.com/raminrasoulinezhad/hls4ml.git
-	cd hls4ml
+	mv hls4ml/ hls4ml_rnn_repo/
+	cd hls4ml_rnn_repo
+	
+**Note** this repository is based on [https://github.com/richarao/hls4ml/tree/keras-lstm](https://github.com/richarao/hls4ml/tree/keras-lstm) (a variend of [https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml](https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml) which is the standard hls4ml tool).
+
+install the required libraries:
+
+<!--
+Conda:
+
 	chmod +x ./install.sh
 	./install.sh
-
-**Note** this repository is based on [https://github.com/richarao/hls4ml/tree/keras-lstm](https://github.com/richarao/hls4ml/tree/keras-lstm) (a variend of [https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml](https://github.com/fastmachinelearning/hls4ml/tree/master/hls4ml) which is the standard hls4ml tool).
+	conda install hls4ml
 
 Then activate the environment:
 
 	conda activate hls4ml-env
 
-You need to manually replace hls4ml library files with a specific version with is located at the repo. So, check where the hls4ml is installed. 
+Pip and virtualenv:
+-->
+
+	virtualenv -p /usr/bin/python3 venv
+	source venv/bin/activate
+	pip install torch torchvision scikit-learn h5py pyyaml hls4ml
+
+Let's see where the python libraries are installed:
 
 	python
 	>>> import hls4ml
 	>>> hls4ml.__path__
 	the output in our case: ['~/.local/lib/python3.6/site-packages/hls4ml']
 
-<!--- To replace the files, use the following code:
+You need to manually replace hls4ml library files with a specific version with is located at the repo. To replace the files, use the following code:
 
 	cp repo_addr/hls4ml ~/.local/lib/python3.6/site-packages/
---->
 
-Also, as we only need synthesis process, turn off the simulation task by 
+**Note** before moving, follow the fowwloings to modify two files in hls4ml directory first.
+
+As we only need synthesis process, turn off the simulation task by 
 
 	vim ~/.local/lib/python3.6/site-packages/hls4ml/templates/vivado/build_prj.tcl
 
@@ -67,14 +83,14 @@ Modify the begining of the file to:
 	./keras-to-hls.sh --help  			# to see the options
 	./keras-to-hls.sh \
 		-x 'xc7vx690tffg1927-2' \
-		-c 5					\
-		-i io_serial			\
-		-r  16					\
-		-d ./projects 			\
+		-c 5 					\
+		-i io_serial  			\
+		-r  16 					\
+		-d ./projects  			\
 		-t 'ap_fixed<8,4>' 		\
 		-g Resource 			\
 		-m 20 					\
-		KERAS_lstm_model
+		KERAS_gru_model
 
 **Note:** Model name should be any model name located in `repo_addr/example-models/keras/*` wihtout `.json` or `_weight.h5` 
 
