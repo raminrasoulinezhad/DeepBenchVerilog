@@ -1,7 +1,5 @@
 import tensorflow as tf
 import json
-import onnx
-import keras2onnx
 import argparse
 from utils import save_model
 

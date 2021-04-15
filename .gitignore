@@ -1,6 +1,2 @@
-venv/
-venv_new/
-venv_keras/
-venv_hls4ml_wrapper/
-venv_keras_generator/
+venv*/
 __pycache__/
