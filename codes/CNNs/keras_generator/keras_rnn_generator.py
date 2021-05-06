@@ -13,6 +13,8 @@ def get_args():
 	parser.add_argument('--hidden', type=int, default=1760, help='please enter the Hidden Units')
 	parser.add_argument('--rnn_model', type=str, default='LSTM', help='please enter the rnn_model: (GRU, LSTM, SimpleRNN)')
 	parser.add_argument('--keras_2_1_3', default=False, action='store_true', help='use it if you want to generate models suing keras 2.1.3')
+	parser.add_argument('--model_name', type=str, default='model', help='Enter a name for the model.')
+	parser.add_argument('--output_dir', type=str, default='./', help='Enter directory address for the output files.')
 	return parser.parse_args()
 
 if __name__ == "__main__":
@@ -64,4 +66,4 @@ if __name__ == "__main__":
 	y = model(x)
 	print('output_shape', y.shape)
 
-	save_model(model)	
+	save_model(model, args.model_name, args.output_dir)	
